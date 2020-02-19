@@ -13,8 +13,7 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
-
+import 'package:provider/provider.dart';
 import 'package:shrine_with_square/colors.dart';
 import 'package:shrine_with_square/model/app_state_model.dart';
 import 'package:shrine_with_square/model/product.dart';
@@ -30,8 +29,8 @@ class CategoryMenuPage extends StatelessWidget {
   Widget _buildCategory(Category category, BuildContext context) {
     final String categoryString = category.toString().replaceAll('Category.', '').toUpperCase();
     final ThemeData theme = Theme.of(context);
-    return ScopedModelDescendant<AppStateModel>(
-      builder: (BuildContext context, Widget child, AppStateModel model) =>
+    return Consumer<AppStateModel>(
+      builder: (BuildContext context, AppStateModel model, Widget child) =>
           GestureDetector(
             onTap: () {
               model.setCategory(category);

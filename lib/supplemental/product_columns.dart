@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:shrine_with_square/model/product.dart';
 import 'package:shrine_with_square/supplemental/product_card.dart';
 
+
 class TwoProductCardColumn extends StatelessWidget {
   const TwoProductCardColumn({
     @required this.bottom,
@@ -27,7 +28,8 @@ class TwoProductCardColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
       const double spacerHeight = 44.0;
 
       final double heightOfCards = (constraints.biggest.height - spacerHeight) / 2.0;

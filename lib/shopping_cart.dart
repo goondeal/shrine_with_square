@@ -16,15 +16,14 @@ import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:scoped_model/scoped_model.dart';
-
+import 'package:provider/provider.dart';
 import 'package:shrine_with_square/colors.dart';
 import 'package:shrine_with_square/expanding_bottom_sheet.dart';
 import 'package:shrine_with_square/model/app_state_model.dart';
-import 'package:shrine_with_square/model/payments_repository.dart';
+// import 'package:shrine_with_square/model/payments_repository.dart';
 import 'package:shrine_with_square/model/product.dart';
-import 'package:square_in_app_payments/in_app_payments.dart';
-import 'package:square_in_app_payments/models.dart';
+// import 'package:square_in_app_payments/in_app_payments.dart';
+// import 'package:square_in_app_payments/models.dart';
 
 const double _leftColumnWidth = 60.0;
 
@@ -56,8 +55,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       backgroundColor: kShrinePink50,
       body: SafeArea(
         child: Container(
-          child: ScopedModelDescendant<AppStateModel>(
-            builder: (BuildContext context, Widget child, AppStateModel model) {
+          child: Consumer<AppStateModel>(
+            builder: (BuildContext context, AppStateModel model, Widget child) {
               return Stack(
                 children: <Widget>[
                   ListView(
@@ -74,7 +73,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                           ),
                           Text(
                             'CART',
-                            style: localTheme.textTheme.subhead
+                            style: localTheme.textTheme.subtitle1
                                 .copyWith(fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(width: 16.0),
@@ -95,7 +94,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                     right: 16.0,
                     child: Column(
                       children: <Widget>[
-                        _prettyButton(model, 'TAKE MY MONEY', _payment),
+                       // _prettyButton(model, 'TAKE MY MONEY', _payment),
                         _prettyButton(model, 'CLEAR CART', (_) {
                           model.clearCart();
                           ExpandingBottomSheet.of(context).close();
@@ -112,23 +111,23 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
     );
   }
 
-  _payment(AppStateModel model) async {
-    await InAppPayments.setSquareApplicationId('sq0idp-Q29izRgOaacjZjUl0Ags-g');
-    await InAppPayments.startCardEntryFlow(
-        onCardNonceRequestSuccess: (CardDetails result) {
-          try {
-            var chargeResult =
-                PaymentsRepository.actuallyMakeTheCharge(result.nonce);
-            if (chargeResult != 'Success!') throw new StateError(chargeResult);
-            InAppPayments.completeCardEntry(
-                onCardEntryComplete: model.clearCart);
-          } catch (ex) {
-            InAppPayments.showCardNonceProcessingError(ex.toString());
-          }
-        },
-        onCardEntryCancel: () {});
-    //ExpandingBottomSheet.of(context).close();
-  }
+  // _payment(AppStateModel model) async {
+  //   await InAppPayments.setSquareApplicationId('sq0idp-Q29izRgOaacjZjUl0Ags-g');
+  //   await InAppPayments.startCardEntryFlow(
+  //       onCardNonceRequestSuccess: (CardDetails result) {
+  //         try {
+  //           var chargeResult =
+  //               PaymentsRepository.actuallyMakeTheCharge(result.nonce);
+  //           if (chargeResult != 'Success!') throw new StateError(chargeResult);
+  //           InAppPayments.completeCardEntry(
+  //               onCardEntryComplete: model.clearCart);
+  //         } catch (ex) {
+  //           InAppPayments.showCardNonceProcessingError(ex.toString());
+  //         }
+  //       },
+  //       onCardEntryCancel: () {});
+  //   //ExpandingBottomSheet.of(context).close();
+  // }
 
   Widget _prettyButton(AppStateModel model, String text, Function action) {
     return RaisedButton(

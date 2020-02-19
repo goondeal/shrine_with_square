@@ -19,9 +19,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  provider: ^4.0.4
 
   intl: 0.15.7
-  scoped_model: 1.0.1
+  
   shrine_images: 1.1.1
   flutter_gallery_assets: 0.1.8
   square_in_app_payments: ^1.1.0

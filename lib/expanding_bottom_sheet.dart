@@ -17,7 +17,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:provider/provider.dart';
 
 import 'package:shrine_with_square/colors.dart';
 import 'package:shrine_with_square/model/app_state_model.dart';
@@ -50,9 +50,7 @@ class ExpandingBottomSheet extends StatefulWidget {
   static _ExpandingBottomSheetState of(BuildContext context, {bool isNullOk = false}) {
     assert(isNullOk != null);
     assert(context != null);
-    final _ExpandingBottomSheetState result = context.ancestorStateOfType(
-      const TypeMatcher<_ExpandingBottomSheetState>()
-    );
+    final _ExpandingBottomSheetState result = context.findAncestorStateOfType<_ExpandingBottomSheetState>();
     if (isNullOk || result != null) {
       return result;
     }
@@ -115,7 +113,8 @@ double _getPeakPoint({double begin, double end}) {
   return begin + (end - begin) * _kPeakVelocityProgress;
 }
 
-class _ExpandingBottomSheetState extends State<ExpandingBottomSheet> with TickerProviderStateMixin {
+class _ExpandingBottomSheetState extends State<ExpandingBottomSheet>
+ with TickerProviderStateMixin {
   final GlobalKey _expandingBottomSheetKey = GlobalKey(debugLabel: 'Expanding bottom sheet');
 
   // The width of the Material, calculated by _widthFor() & based on the number
@@ -173,7 +172,6 @@ class _ExpandingBottomSheetState extends State<ExpandingBottomSheet> with Ticker
   Animation<double> _getHeightAnimation(double screenHeight) {
     if (_controller.status == AnimationStatus.forward) {
       // Opening animation
-
       return _getEmphasizedEasingAnimation(
         begin: _kCartHeight,
         peak: _kCartHeight + (screenHeight - _kCartHeight) * _kPeakVelocityProgress,
@@ -324,7 +322,7 @@ class _ExpandingBottomSheetState extends State<ExpandingBottomSheet> with Ticker
   Widget _buildCart(BuildContext context, Widget child) {
     // numProducts is the number of different products in the cart (does not
     // include multiples of the same product).
-    final AppStateModel model = ScopedModel.of<AppStateModel>(context);
+    final AppStateModel model = Provider.of<AppStateModel>(context);
     final int numProducts = model.productsInCart.keys.length;
     final int totalCartQuantity = model.totalCartQuantity;
     final Size screenSize = MediaQuery.of(context).size;
@@ -405,8 +403,8 @@ class _ExpandingBottomSheetState extends State<ExpandingBottomSheet> with Ticker
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: open,
-            child: ScopedModelDescendant<AppStateModel>(
-              builder: (BuildContext context, Widget child, AppStateModel model) {
+            child: Consumer<AppStateModel>(
+              builder: (BuildContext context, AppStateModel model, Widget child) {
                 return AnimatedBuilder(
                   builder: _buildCart,
                   animation: _controller,
@@ -435,19 +433,20 @@ class _ProductThumbnailRowState extends State<ProductThumbnailRow> {
   // _internalList represents the list as it is updated by the AppStateModel.
   List<int> _internalList;
 
+  
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _list = _ListModel(
       listKey: _listKey,
-      initialItems: ScopedModel.of<AppStateModel>(context).productsInCart.keys.toList(),
+      initialItems: Provider.of<AppStateModel>(context).productsInCart.keys.toList(),
       removedItemBuilder: _buildRemovedThumbnail,
     );
-    _internalList = List<int>.from(_list.list);
+    _internalList = List<int>.from(_list.list);  
   }
 
   Product _productWithId(int productId) {
-    final AppStateModel model = ScopedModel.of<AppStateModel>(context);
+    final AppStateModel model = Provider.of<AppStateModel>(context);
     final Product product = model.getProductById(productId);
     assert(product != null);
     return product;
@@ -478,7 +477,7 @@ class _ProductThumbnailRowState extends State<ProductThumbnailRow> {
   // If the internalList is longer, then an item has been added.
   void _updateLists() {
     // Update _internalList based on the model
-    _internalList = ScopedModel.of<AppStateModel>(context).productsInCart.keys.toList();
+    _internalList = Provider.of<AppStateModel>(context).productsInCart.keys.toList();
     final Set<int> internalSet = Set<int>.from(_internalList);
     final Set<int> listSet = Set<int>.from(_list.list);
 
@@ -522,8 +521,8 @@ class _ProductThumbnailRowState extends State<ProductThumbnailRow> {
   @override
   Widget build(BuildContext context) {
     _updateLists();
-    return ScopedModelDescendant<AppStateModel>(
-      builder: (BuildContext context, Widget child, AppStateModel model) => _buildAnimatedList(),
+    return Consumer<AppStateModel>(
+      builder: (BuildContext context, AppStateModel model, Widget child) => _buildAnimatedList(),
     );
   }
 }
@@ -565,8 +564,8 @@ class ExtraProductsNumber extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<AppStateModel>(
-      builder: (BuildContext builder, Widget child, AppStateModel model) => _buildOverflow(model, context),
+    return Consumer<AppStateModel>(
+      builder: (BuildContext builder, AppStateModel model, Widget child) => _buildOverflow(model, context),
     );
   }
 }

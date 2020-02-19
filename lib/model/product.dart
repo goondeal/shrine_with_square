@@ -45,4 +45,6 @@ class Product {
 
   @override
   String toString() => '$name (id=$id)';
+
+  //
 }

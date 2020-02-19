@@ -14,8 +14,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:scoped_model/scoped_model.dart';
-
+import 'package:provider/provider.dart';
 import 'package:shrine_with_square/model/app_state_model.dart';
 import 'package:shrine_with_square/model/product.dart';
 
@@ -43,8 +42,8 @@ class ProductCard extends StatelessWidget {
       fit: BoxFit.cover,
     );
 
-    return ScopedModelDescendant<AppStateModel>(
-      builder: (BuildContext context, Widget child, AppStateModel model) {
+    return Consumer<AppStateModel>(
+      builder: (BuildContext context, AppStateModel model, Widget child) {
         return GestureDetector(
           onTap: () {
             model.addProductToCart(product.id);

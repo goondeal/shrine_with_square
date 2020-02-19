@@ -11,8 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter/material.dart';
 
 import 'package:shrine_with_square/model/product.dart';
 import 'package:shrine_with_square/model/products_repository.dart';
@@ -20,7 +19,7 @@ import 'package:shrine_with_square/model/products_repository.dart';
 double _salesTaxRate = 0.06;
 double _shippingCostPerItem = 7.0;
 
-class AppStateModel extends Model {
+class AppStateModel with ChangeNotifier {
   // All the available products.
   List<Product> _availableProducts;
 

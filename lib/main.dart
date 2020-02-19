@@ -13,8 +13,7 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
-
+import 'package:provider/provider.dart';
 import 'package:shrine_with_square/backdrop.dart';
 import 'package:shrine_with_square/category_menu_page.dart';
 import 'package:shrine_with_square/colors.dart';
@@ -51,13 +50,14 @@ class _ShrineAppState extends State<ShrineApp>
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<AppStateModel>(
-      model: model,
+    return 
+    ChangeNotifierProvider<AppStateModel>(
+      create: (context) => model,
       child: MaterialApp(
         title: 'Shrine',
         home: HomePage(
           backdrop: Backdrop(
-            frontLayer: const ProductPage(),
+            frontLayer:  ProductPage(),
             backLayer:
                 CategoryMenuPage(onCategoryTap: () => _controller.forward()),
             frontTitle: const Text('SHRINE'),

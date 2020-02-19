@@ -13,23 +13,19 @@
 // limitations under the License.
 
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
-
+import 'package:provider/provider.dart';
 import 'package:shrine_with_square/backdrop.dart';
 import 'package:shrine_with_square/expanding_bottom_sheet.dart';
 import 'package:shrine_with_square/model/app_state_model.dart';
-import 'package:shrine_with_square/model/product.dart';
 import 'package:shrine_with_square/supplemental/asymmetric_view.dart';
 
 class ProductPage extends StatelessWidget {
-  const ProductPage({this.category = Category.all});
-
-  final Category category;
+ 
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<AppStateModel>(
-      builder: (BuildContext context, Widget child, AppStateModel model) {
+    return Consumer<AppStateModel>(
+      builder: (BuildContext context, AppStateModel model, Widget child) {
         return AsymmetricView(products: model.getProducts());
     });
   }
