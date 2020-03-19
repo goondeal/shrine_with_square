@@ -433,16 +433,15 @@ class _ProductThumbnailRowState extends State<ProductThumbnailRow> {
   // _internalList represents the list as it is updated by the AppStateModel.
   List<int> _internalList;
 
-  
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  initState(){
+    super.initState();
     _list = _ListModel(
       listKey: _listKey,
-      initialItems: Provider.of<AppStateModel>(context).productsInCart.keys.toList(),
+      initialItems: Provider.of<AppStateModel>(context, listen: false).productsInCart.keys.toList(),
       removedItemBuilder: _buildRemovedThumbnail,
     );
-    _internalList = List<int>.from(_list.list);  
+    _internalList = List<int>.from(_list.list); 
   }
 
   Product _productWithId(int productId) {
